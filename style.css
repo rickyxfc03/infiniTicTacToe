@@ -1,0 +1,59 @@
+body{
+    margin: 0;
+    font-family:Verdana, sans-serif;
+    background: linear-gradient(-45deg, #2b1b0f, #3e0920, #072c38, #063618);
+    background-size: 400% 400%;
+    animation: 7s ease-in-out infinite alternate running gradient;
+    color:aliceblue;
+}
+h1,h2{
+    margin-bottom: 0;
+    margin-top:2rem;
+}
+p{
+    margin-top: 0;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 0%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }   
+}
+
+#bigwrapper{
+    height: 100vh;
+    display:grid;
+    align-content: space-between;
+}
+
+#smallwrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input{
+    margin:2
+}
+[type=button]{
+    width: 7rem;
+    height: 2rem;
+}
+
+#footer{
+    justify-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#footer p{
+    margin: 0;
+}
+
+a{
+    color:aquamarine;
+}
