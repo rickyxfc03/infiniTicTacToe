@@ -6,5 +6,15 @@
     <body>
         <canvas id="canvas"></canvas>
         <script src='canvas.js'></script>
+        <div id="buttoncontrols">
+            <a></a><a></a>
+            <input type="button" value="reset" class="lilbutton" onclick="initialize()"/>
+            <input type="button" value="unzoom" class="lilbutton" onclick="unzoom()"/>
+            <input type="button" value="up" class="lilbutton" onclick="movegridup()"/>
+            <input type="button" value="zoom" class="lilbutton" onclick="zoom()"/>
+            <input type="button" value="left" class="lilbutton" onclick="movegridleft()"/>
+            <input type="button" value="down" class="lilbutton" onclick="movegriddown()"/>
+            <input type="button" value="right" class="lilbutton" onclick="movegridright()"/>
+        </div>
     </body>
 </html>

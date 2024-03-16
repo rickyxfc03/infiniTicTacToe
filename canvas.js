@@ -21,10 +21,11 @@ function setblock(x, y, sign) {
     ai = availindex(x, y)
     if(ai >= 0){
         placed.push({'x':x, 'y':y, 'sign':sign})
+        //console.log("--piazzato-- coord:",x,y)
         available.splice(ai, 1)
         updateNeighbors(x, y)
         refreshcanvas()
-        if(stilltowin) findfirstforwin(x,y)
+        if(stilltowin) wincheck(x,y)
         return true
     }
     else return false
@@ -63,26 +64,28 @@ function refreshcanvas(){
     smallupdater()
 }
 
-/* rip dirlist, you will be missed */ 
-//let dirlist = [[-1,1],[0,1],[1,1],[-1,0],[0,0],[1,0],[-1,-1],[0,-1],[1,-1]]
 
+
+let dirlist = [[-1,1],[0,1],[1,1],[-1,0],[0,0],[1,0],[-1,-1],[0,-1],[1,-1]]
 //given a point finds a point to which start the winning condition from
-function findfirstforwin(x,y){
-    let s = getBlock(x,y).sign
-    let DLxy= getBlock(x-1, y-1), Lxy= getBlock(x-1, y), LUxy= getBlock(x-1,y+1), Uxy= getBlock(x, y+1)
-    if(Lxy!=undefined && Lxy.sign == s) findfirstforwin(x-1,y)
-    else if(DLxy!=undefined && DLxy.sign == s) findfirstforwin(x-1,y-1)
-    else if(LUxy!=undefined && LUxy.sign == s) findfirstforwin(x-1,y+1)
-    else if(Uxy!=undefined && Uxy.sign == s) findfirstforwin(x,y+1)
-    else wincheck(x,y)
-}
-//given a point (which is an 'edge' block) chooses the direction of iteration 
 function wincheck(x,y){
-    let DxyI = placeindex(x,y-1), DRxyI = placeindex(x+1,y-1), RxyI = placeindex(x+1,y), URxyI = placeindex(x+1,y+1)
-    if(DxyI[i]!=-1) winstep(x, y-1, [0,-1], getBlock(x,y).sign, 1)
-    if(DRxyI[i]!=-1) winstep(x+1, y-1, [1,-1], getBlock(x,y).sign, 1)
-    if(RxyI[i]!=-1) winstep(x+1, y, [1,0], getBlock(x,y).sign, 1)
-    if(URxyI[i]!=-1) winstep(x+1, y+1, [1,1], getBlock(x,y).sign, 1)
+    let s = getBlock(x,y).sign
+    for(let i=0; i<3; i++){
+        for(let j=0; j<3; j++){
+            diridx = i*3+j
+            if(diridx==4) continue
+            if (b = getBlock(x+j-1, y-i+1)){
+                if (b.sign == s && diridx<4){
+                    //console.log("--wincheck-- coord and s:", x, y,s, 'block looked:', b, 'dirinfo:', diridx, dirlist[diridx])
+                    wincheck(x+j-1, y-i+1)
+                }
+                else if (b.sign == s && diridx>4){
+                    //console.log("--prestep-- coord: ",x,y,'block: ', b, diridx, dirlist[diridx])
+                    winstep(x,y,dirlist[diridx],s,0)
+                }
+            }
+        }
+    }
 }
 //recursive call with accumulator
 function winstep(x, y, dir, sign, count){
@@ -90,6 +93,7 @@ function winstep(x, y, dir, sign, count){
     if(b==undefined) return
     if (b.sign == sign){
         count++
+        //console.log('--step-- n:',count, 'coords:',x,y, 'other:', sign, dir)
         if (count == totForWin){
             alert('hai vinto')
             //initialize()
@@ -97,7 +101,7 @@ function winstep(x, y, dir, sign, count){
             return
         }
         winstep(x+dir[0], y+dir[1], dir, sign, count)
-    } 
+    }
 }
 
 canvas = document.getElementById("canvas")
@@ -153,35 +157,41 @@ function restorecolors(){
         if (p3c != null) ({color1, color2, color3} = JSON.parse(p3c))
     }
 }
+
+function zoom(){
+    unit += Math.ceil(unit/6) 
+    refreshcanvas()
+}
+function unzoom(){
+    unit -= Math.floor(unit/6)
+    refreshcanvas()
+}
+function movegridup(){
+    ctrofscrH += unit
+    refreshcanvas()
+}
+function movegriddown(){
+    ctrofscrH -= unit
+    refreshcanvas()
+}
+function movegridleft(){
+    ctrofscrW += unit
+    refreshcanvas()
+}
+function movegridright(){
+    ctrofscrW -= unit
+    refreshcanvas()
+}
+
 //manages key presses
 window.addEventListener('keydown', function(e){
-    if (e.code == 'BracketRight'){
-        unit += Math.ceil(unit/6) 
-        refreshcanvas()
-    }
-    if (e.code == 'BracketLeft'){
-        unit -= Math.floor(unit/6)
-        refreshcanvas()
-    }
-    if (e.code == 'ArrowUp'){
-        ctrofscrH += unit
-        refreshcanvas()
-    }
-    if (e.code == 'ArrowDown'){
-        ctrofscrH -= unit
-        refreshcanvas()
-    }
-    if (e.code == 'ArrowLeft'){
-        ctrofscrW += unit
-        refreshcanvas()
-    }
-    if (e.code == 'ArrowRight'){
-        ctrofscrW -= unit
-        refreshcanvas()
-    }
-    if (e.code == 'KeyR'){
-        initialize()
-    }
+    if (e.code == 'BracketRight') zoom()
+    if (e.code == 'BracketLeft') unzoom()
+    if (e.code == 'ArrowUp') movegridup()
+    if (e.code == 'ArrowDown') movegriddown()
+    if (e.code == 'ArrowLeft') movegridleft()
+    if (e.code == 'ArrowRight') movegridright()
+    if (e.code == 'KeyR') initialize()
 })
 
 initialize()

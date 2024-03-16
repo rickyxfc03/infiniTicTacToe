@@ -57,3 +57,20 @@ input{
 a{
     color:aquamarine;
 }
+
+#buttoncontrols{
+    display:grid;
+    grid-template-columns: auto auto auto;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.lilbutton{
+    background-color: #1c1b21;
+    color: white;
+    text-align: center;
+    width:4rem;
+    height: 4rem;
+    cursor: pointer;
+}
